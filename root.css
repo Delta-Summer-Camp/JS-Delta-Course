@@ -1,5 +1,23 @@
-body {
+* {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    font-family: Arial, serif;
+}
+
+#gameArea {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    height: 800px;
+    width: 800px;
+    border: darkblue 1px solid;
+}
+
+#blackSquare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 30px;
+    width: 30px;
+    background-color: green;
 }
