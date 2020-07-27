@@ -8,8 +8,6 @@
     position: fixed;
     top: 30px;
     left: 30px;
-    height: 800px;
-    width: 800px;
     border: darkblue 1px solid;
 }
 
@@ -17,7 +15,10 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 30px;
-    width: 30px;
     background-color: green;
+}
+
+#boll {
+    position: absolute;
+    background-color: black;
 }
