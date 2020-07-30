@@ -3,7 +3,8 @@
 document.addEventListener('keydown', processKey);
 const STEP = 10;
 const GAME_SIZE = 840;
-const SQUARE_SIZE = 30;
+const SQUARE_SIZE = 100;
+let racketSizeX, racketSizeY; // ToDo: учесть размеры ракетки
 const X_MAX = GAME_SIZE - SQUARE_SIZE;
 const Y_MAX = GAME_SIZE - SQUARE_SIZE;
 const BALL_SIZE = 20;
@@ -74,7 +75,7 @@ function processKey(ev) {
     bSquare.style.left = sqx + 'px';
     bSquare.style.top = sqy + 'px';
 
-    if(collision()) doCollision();
+    testForCollision();
 
     return true;
 }
@@ -104,24 +105,41 @@ function moveTheBall() {
     bl.style.left = bx + 'px';
     bl.style.top = by + 'px';
 
-    if (collision()) doCollision();
+    testForCollision();
 }
 
 // Возвращает ответ на вопрос "столкнулись ли мячик с ракеткой?"
-function collision() {
+function testForCollision() {
     const sqCenterX = sqx + Math.floor(SQUARE_SIZE / 2);
     const sqCenterY = sqy + Math.floor(SQUARE_SIZE / 2);
     const bCenterX = bx + Math.floor(BALL_SIZE / 2);
     const bCenterY = by + Math.floor(BALL_SIZE / 2);
 
-    let collision = false;
-    if ((Math.abs(sqCenterX - bCenterX) < (SQUARE_SIZE + BALL_SIZE) / 2) &&
-        (Math.abs(sqCenterY - bCenterY) < (SQUARE_SIZE + BALL_SIZE) / 2)) collision = true;
+    const distanceX = sqCenterX - bCenterX;
+    const distanceY = sqCenterY - bCenterY;
 
-    return collision;
+    if ((Math.abs(distanceX) <= (SQUARE_SIZE + BALL_SIZE) / 2)
+        && (Math.abs(distanceY) <= (SQUARE_SIZE + BALL_SIZE) / 2)) {
+        if (Math.abs(distanceX) > Math.abs(distanceY)) { // соударение произошло по горизонтали
+            if (distanceX < 0) doCollision('r');
+            else doCollision('l');
+        } else {  // соударение произошло по вертикали
+            if (distanceY < 0) doCollision('b');
+            else doCollision('t');
+        }
+    }
 }
 
-// Обработка столкновений
-function doCollision() {
-    alert("Столкнулись!");
+// Обработка столкновений; direction - направление откуда прилетел мяч, может быть 'l', 'r', 't', 'b'
+function doCollision(direction) {
+    switch (direction) {
+        case 'r':
+        case 'l':
+            vx = - vx;
+            break;
+        case 'u':
+        case 'b':
+            vy = - vy;
+            break;
+    }
 }
