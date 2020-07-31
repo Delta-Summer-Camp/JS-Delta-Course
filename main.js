@@ -3,11 +3,15 @@
 document.addEventListener('keydown', processKey);
 const STEP = 10;
 const GAME_SIZE = 840;
-const SQUARE_SIZE = 100;
+// const SQUARE_SIZE = 100;
 let racketSizeX, racketSizeY; // ToDo: учесть размеры ракетки
-const X_MAX = GAME_SIZE - SQUARE_SIZE;
-const Y_MAX = GAME_SIZE - SQUARE_SIZE;
-const BALL_SIZE = 20;
+const rX = 300;
+const rY = 15;
+// const X_MAX = GAME_SIZE - SQUARE_SIZE;
+// const Y_MAX = GAME_SIZE - SQUARE_SIZE;
+const X_MAX = GAME_SIZE - rX;
+const Y_MAX = GAME_SIZE - rY;
+const BALL_SIZE = 50;
 const V_MIN = 5;
 const V_MAX = 20;
 let bx, by;
@@ -35,7 +39,9 @@ function init() {
 
     const ga = document.getElementById('gameArea');
     ga.style.width = ga.style.height = GAME_SIZE + 'px';
-    bSquare.style.width = bSquare.style.height = SQUARE_SIZE + 'px'
+    // bSquare.style.width = bSquare.style.height = SQUARE_SIZE + 'px'
+    bSquare.style.width = rX + 'px';
+    bSquare.style.height = rY + 'px';
     const bl = document.getElementById('boll');
     bl.style.width = bl.style.height = BALL_SIZE + 'px';
     bl.style.borderRadius = Math.floor(BALL_SIZE / 2) + 'px';
@@ -110,16 +116,15 @@ function moveTheBall() {
 
 // Возвращает ответ на вопрос "столкнулись ли мячик с ракеткой?"
 function testForCollision() {
-    const sqCenterX = sqx + Math.floor(SQUARE_SIZE / 2);
-    const sqCenterY = sqy + Math.floor(SQUARE_SIZE / 2);
+    const sqCenterX = sqx + Math.floor(rX / 2);
+    const sqCenterY = sqy + Math.floor(rY / 2);
     const bCenterX = bx + Math.floor(BALL_SIZE / 2);
     const bCenterY = by + Math.floor(BALL_SIZE / 2);
 
     const distanceX = sqCenterX - bCenterX;
     const distanceY = sqCenterY - bCenterY;
 
-    if ((Math.abs(distanceX) <= (SQUARE_SIZE + BALL_SIZE) / 2)
-        && (Math.abs(distanceY) <= (SQUARE_SIZE + BALL_SIZE) / 2)) {
+    if ((Math.abs(distanceX) <= (rX + BALL_SIZE) / 2) && (Math.abs(distanceY) <= (rY + BALL_SIZE) / 2)) {
         if (Math.abs(distanceX) > Math.abs(distanceY)) { // соударение произошло по горизонтали
             if (distanceX < 0) doCollision('r');
             else doCollision('l');
@@ -134,12 +139,24 @@ function testForCollision() {
 function doCollision(direction) {
     switch (direction) {
         case 'r':
-        case 'l':
-            vx = - vx;
+            vx = Math.abs(vx);
+            bx = sqx + rX;
+            if (bx > GAME_SIZE - BALL_SIZE) bx = GAME_SIZE - BALL_SIZE;
             break;
-        case 'u':
+        case 'l':
+            vx = -1 * Math.abs(vx);
+            bx = sqx - BALL_SIZE;
+            if (bx < 0) bx = 0;
+            break;
+        case 't':
+            vy = -1 * Math.abs(vy);
+            by = sqy - BALL_SIZE;
+            if (by < 0) by = 0;
+            break;
         case 'b':
-            vy = - vy;
+            vy = Math.abs(vy);
+            by = sqy + rY;
+            if (by > GAME_SIZE - BALL_SIZE) by = GAME_SIZE - BALL_SIZE;
             break;
     }
 }
