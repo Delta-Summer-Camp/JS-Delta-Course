@@ -20,10 +20,10 @@ const INTERVAL = 50;
 const bSquare = document.getElementById('blackSquare');
 let isRunning = false;
 let timer;
+let score = 0;
 
 // текущее положение ракетка
-let sqx = bSquare.offsetLeft;
-let sqy = bSquare.offsetTop;
+let sqx, sqy;
 
 function init() {
     // Случайная генерация начальных значений
@@ -43,11 +43,18 @@ function init() {
     bSquare.style.width = rX + 'px';
     bSquare.style.height = rY + 'px';
     bSquare.style.borderRadius = Math.floor(rY / 2) + 'px';
+    bSquare.style.top = (GAME_SIZE - rY) + 'px';
+    bSquare.style.left = (GAME_SIZE - rX) / 2 + 'px';
+    sqx = bSquare.offsetLeft;
+    sqy = bSquare.offsetTop;
+
     const bl = document.getElementById('boll');
     bl.style.width = bl.style.height = BALL_SIZE + 'px';
     bl.style.borderRadius = Math.floor(BALL_SIZE / 2) + 'px';
     bl.style.left = bx + 'px';
     bl.style.top = by + 'px';
+
+    document.getElementById('score').innerText = 'Score: ' + score;
 }
 
 function processKey(ev) {
@@ -113,6 +120,7 @@ function moveTheBall() {
     bl.style.top = by + 'px';
 
     testForCollision();
+    testForFail();
 }
 
 // Возвращает ответ на вопрос "столкнулись ли мячик с ракеткой?"
@@ -139,26 +147,33 @@ function testForCollision() {
 
 // Обработка столкновений; direction - направление откуда прилетел мяч, может быть 'l', 'r', 't', 'b'
 function doCollision(direction) {
+    score++;
+    document.getElementById('score').innerText = 'Score: ' + score;
+    const INC = 1.1;
     switch (direction) {
         case 'r':
-            vx = Math.abs(vx);
+            vx = Math.abs(vx * INC);
             bx = sqx + rX;
             if (bx > GAME_SIZE - BALL_SIZE) bx = GAME_SIZE - BALL_SIZE;
             break;
         case 'l':
-            vx = -1 * Math.abs(vx);
+            vx = -1 * Math.abs(vx * INC);
             bx = sqx - BALL_SIZE;
             if (bx < 0) bx = 0;
             break;
         case 't':
-            vy = -1 * Math.abs(vy);
+            vy = -1 * Math.abs(vy * INC);
             by = sqy - BALL_SIZE;
             if (by < 0) by = 0;
             break;
         case 'b':
-            vy = Math.abs(vy);
+            vy = Math.abs(vy * INC);
             by = sqy + rY;
             if (by > GAME_SIZE - BALL_SIZE) by = GAME_SIZE - BALL_SIZE;
             break;
     }
+}
+
+function testForFail() {
+    if (by >= GAME_SIZE - BALL_SIZE) alert('Game over!');
 }
