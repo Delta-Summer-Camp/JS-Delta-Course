@@ -6,7 +6,7 @@ const GAME_SIZE = 840;
 // const SQUARE_SIZE = 100;
 let racketSizeX, racketSizeY; // ToDo: учесть размеры ракетки
 const rX = 300;
-const rY = 15;
+const rY = 20;
 // const X_MAX = GAME_SIZE - SQUARE_SIZE;
 // const Y_MAX = GAME_SIZE - SQUARE_SIZE;
 const X_MAX = GAME_SIZE - rX;
@@ -42,6 +42,7 @@ function init() {
     // bSquare.style.width = bSquare.style.height = SQUARE_SIZE + 'px'
     bSquare.style.width = rX + 'px';
     bSquare.style.height = rY + 'px';
+    bSquare.style.borderRadius = Math.floor(rY / 2) + 'px';
     const bl = document.getElementById('boll');
     bl.style.width = bl.style.height = BALL_SIZE + 'px';
     bl.style.borderRadius = Math.floor(BALL_SIZE / 2) + 'px';
@@ -125,7 +126,8 @@ function testForCollision() {
     const distanceY = sqCenterY - bCenterY;
 
     if ((Math.abs(distanceX) <= (rX + BALL_SIZE) / 2) && (Math.abs(distanceY) <= (rY + BALL_SIZE) / 2)) {
-        if (Math.abs(distanceX) > Math.abs(distanceY)) { // соударение произошло по горизонтали
+        if ((rX / 2 - distanceX) < rY / 2) {
+//        if (Math.abs(distanceX) > Math.abs(distanceY)) { // соударение произошло по горизонтали
             if (distanceX < 0) doCollision('r');
             else doCollision('l');
         } else {  // соударение произошло по вертикали
